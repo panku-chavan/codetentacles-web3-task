@@ -9,7 +9,7 @@ import ConnectToWallet from "./components/ConnectToWallet";
 
 const config = getDefaultConfig({
   appName: "My RainbowKit App",
-  projectId: "YOUR_PROJECT_ID",
+  projectId: "94556f45ecceb6a915fcf1cbf322415b",
   chains: [mainnet, polygon, optimism, arbitrum, base],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
