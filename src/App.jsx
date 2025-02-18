@@ -1,31 +1,60 @@
 import "./App.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { getDefaultConfig, RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { mainnet, polygon, optimism, arbitrum, base } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import ConnectToWallet from "./components/ConnectToWallet";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+const projectId = "YOUR_PROJECT_ID";
+
+const wyzthTestnet = {
+  id: 309,
+  name: "Wyzth Testnet",
+  network: "wyzth-testnet",
+  nativeCurrency: {
+    name: "Wyzth",
+    symbol: "WYZ",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: "https://rpc-testnet3.wyzthchain.org",
+  },
+};
 
 const config = getDefaultConfig({
   appName: "My RainbowKit App",
-  projectId: "94556f45ecceb6a915fcf1cbf322415b",
-  chains: [mainnet, polygon, optimism, arbitrum, base],
-  ssr: true, // If your dApp uses server side rendering (SSR)
+  projectId: projectId,
+  chains: [mainnet, polygon, optimism, arbitrum, base, wyzthTestnet],
+  ssr: true,
 });
 
 const queryClient = new QueryClient();
 
-function App() {
-  return <>
-  <WagmiProvider config={config}>
+const App = () => {
+  return (
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <ConnectToWallet/>          
+        <RainbowKitProvider theme={darkTheme()}>
+          <ConnectToWallet />
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
-  </>;
-}
+  );
+};
 
 export default App;
