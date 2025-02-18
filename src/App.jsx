@@ -38,7 +38,11 @@ const App = () => {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={darkTheme()}>
+          <h2>Web3 Integration with RainbowKit</h2>
+          <div className="container">
           <ConnectToWallet />
+
+          </div>
           <ToastContainer
             position="top-center"
             autoClose={5000}
