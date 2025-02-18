@@ -8,7 +8,6 @@ const ConnectToWallet = () => {
   const { switchChain } = useSwitchChain();
   const chainId = useChainId();
   const [previousIsConnected, setPreviousIsConnected] = useState(null);
-  const [isChainAdded, setIsChainAdded] = useState(false);
 
   const addCustomNetwork = async () => {
     const chainIdHex = '0x135'; // Ensure this matches TARGET_CHAIN_ID
@@ -33,9 +32,15 @@ const ConnectToWallet = () => {
       toast.success('Wyzth Testnet added successfully!');
       return true; // Network added successfully
     } catch (error) {
-      console.error('Failed to add Wyzth Testnet:', error);
-      toast.error(error.message);
-      return false; // Indicate failure
+      if (error.code === -32000) {
+        console.error('Invalid input. The network might already be added with the same chain ID.', error);
+        toast.info('The network is already added. Switching to it.');
+        return true; // Assume the network is already added
+      } else {
+        console.error('Failed to add Wyzth Testnet:', error);
+        toast.error(error.message);
+        return false; // Indicate failure
+      }
     }
   };
 
@@ -48,16 +53,13 @@ const ConnectToWallet = () => {
         toast.success(`Connected with chain ID: ${chainId}`);
 
         // Add custom network programmatically if not already added
-        if (!isChainAdded && chainId !== 309) {
-          addCustomNetwork().then(() => {
+        if (chainId !== 309) {
+          addCustomNetwork().then((isAdded) => {
             // After adding the custom network, switch to it
-            if (isChainAdded) {
+            if (isAdded) {
               switchChain(309);
             }
           });
-        } else if (isChainAdded) {
-          // If the custom network is already added, switch to it directly
-          switchChain(309);
         }
       } else {
         console.log('Wallet disconnected');
@@ -67,7 +69,7 @@ const ConnectToWallet = () => {
     }
 
     setPreviousIsConnected(isConnected);
-  }, [isConnected, address, chainId, previousIsConnected, isChainAdded]);
+  }, [isConnected, address, chainId, previousIsConnected]);
 
   return (
     <>
